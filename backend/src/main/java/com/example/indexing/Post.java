@@ -5,11 +5,11 @@ import java.util.Arrays;
 public class Post {
     private String id, shortcode, type, display_url, thumbnail_src, description;
     private OwnerData owner;
-    private boolean is_video;
+    private boolean is_video, comments_disabled;
     private long comments, likes, views;
     private long taken_at_timestamp;
-
     private String[] hashtags, mentions;
+
 
     @Override
     public String toString() {
@@ -22,6 +22,7 @@ public class Post {
                 ", description='" + description + '\'' +
                 ", owner=" + owner +
                 ", is_video=" + is_video +
+                ", comments_disabled=" + comments_disabled +
                 ", comments=" + comments +
                 ", likes=" + likes +
                 ", views=" + views +
@@ -30,6 +31,18 @@ public class Post {
                 ", mentions=" + Arrays.toString(mentions) +
                 '}';
     }
+
+    public boolean isComments_disabled() {
+        return comments_disabled;
+    }
+
+    public void setComments_disabled(boolean comments_disabled) {
+        this.comments_disabled = comments_disabled;
+    }
+
+
+
+
 
     public String getId() {
         return id;

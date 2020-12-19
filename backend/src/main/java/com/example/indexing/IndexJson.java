@@ -10,8 +10,6 @@ import org.elasticsearch.common.xcontent.XContentBuilder;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.HashSet;
-import java.util.Set;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -25,7 +23,7 @@ public class IndexJson {
                 RestClient.builder(
                         new HttpHost("localhost", 9200, "http")));
         // read json file
-        File folder = new File("src/data");
+        File folder = new File("src/data/json_posts");
         File[] listOfFiles = folder.listFiles();
 
 
@@ -47,8 +45,10 @@ public class IndexJson {
                 XContentBuilder builder = XContentFactory.jsonBuilder();
                 builder.startObject();
                 {
+                    builder.field("id", post.getId());
                     builder.field("shortcode", post.getShortcode());
                     builder.field("type", post.getType());
+
                     builder.field("display_url", post.getDisplay_url());
                     builder.field("thumbnail_src", post.getThumbnail_src());
                     builder.field("description", post.getDescription());
@@ -56,6 +56,7 @@ public class IndexJson {
                     builder.field("owner_id", post.getOwner().getId());
                     builder.field("owner_username", post.getOwner().getUsername());
                     builder.field("is_video", post.isIs_video());
+                    builder.field("comments_disabled", post.isComments_disabled());
 
                     builder.field("comments", post.getComments());
                     builder.field("likes", post.getLikes());

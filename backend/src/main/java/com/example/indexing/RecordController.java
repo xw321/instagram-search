@@ -6,7 +6,6 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.common.unit.Fuzziness;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
@@ -40,8 +39,8 @@ public class RecordController {
                         new HttpHost("localhost", 9200, "http")));
         SearchRequest searchRequest = new SearchRequest("instapost");
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-        searchSourceBuilder.query(QueryBuilders.multiMatchQuery(query, "description", "hashtags")
-                .fuzziness(Fuzziness.AUTO)).size(50);
+        float threshold = 0.7f;
+        searchSourceBuilder.query(QueryBuilders.matchQuery("description", query)).minScore(threshold).size(20);
         searchRequest.source(searchSourceBuilder);
         // issue request
         SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
@@ -67,12 +66,21 @@ public class RecordController {
     private float getNewScore(SearchHit searchHit, float maxScore) {
         float raw = searchHit.getScore();
         Map<String, Object> map = searchHit.getSourceAsMap();
+
         int likes = (int) map.get("likes");
         int comments = (int) map.get("comments");
-        float weight = (float) (likes * 0.8 + comments * 0.2);
-        int scale = (int) (weight / raw) + 1;
+        boolean commentDisabled = (boolean) map.get("comments_disabled");
+        float weight;
+        if (commentDisabled) {
+            weight = (float) (likes * 0.7);
+        } else {
+            weight = (float) (likes * 0.5 + comments * 0.2);
+        }
+
+        float scale = (weight / maxScore);
         float newScore = (float) (1.0 + raw + weight * 1.0 / scale);
-        newScore = (float) (raw - 1 + (Math.log(newScore) / Math.log(maxScore)));
+        //newScore = (float) (raw - 1 + (Math.log(newScore) / Math.log(maxScore)));
+
         System.out.println("old : " + raw + "    new : " + newScore);
         return newScore;
 
