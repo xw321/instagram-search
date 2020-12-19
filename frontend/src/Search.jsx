@@ -23,6 +23,7 @@ class Search extends Component {
     }
     handleSubmitQuery(evt) {
         if (evt.key === "Enter") {
+
             let queryText = this.state.query
 
             if (queryText.length !== 0) {
@@ -33,6 +34,7 @@ class Search extends Component {
                 }
                 ).then(res => {
                     // parse each json string to object and put in array
+                    this.setState({ docs: [] })
                     this.parseData(res.data)
                 })
             }
