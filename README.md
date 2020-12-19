@@ -21,3 +21,8 @@ Type `npm install` in the terminal and hit ↵ Enter. This building process coul
 Type `npm start` in the terminal and hit ↵ Enter.
 
 You can go to `http://localhost:3000` to use the web interface
+
+
+Please note that all functionalities relies on the post data, which I crawled using [this scraper](https://github.com/drawrowfly/instagram-scraper).
+
+The crawled data is not uploaded.
